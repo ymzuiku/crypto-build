@@ -1,6 +1,6 @@
 {
-	"name": "crypto-builder",
-	"version": "0.1.2",
+	"name": "crypto-build",
+	"version": "0.1.3",
 	"private": false,
 	"scripts": {
 		"dev": "esbuild src/index.ts --platform=node --external:fastify --external:util --outfile=dist/index.js --bundle --watch"
@@ -17,7 +17,7 @@
 		"source-map-support": "^0.5.21"
 	},
 	"bin": {
-		"crypto-builder": "bin.js"
+		"crypto-build": "bin.js"
 	},
 	"repository": {
 		"type": "git",

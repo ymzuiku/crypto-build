@@ -1,4 +1,4 @@
-# crypto-builder
+# crypto-build
 
 Easy build nodejs code to safe deploy to other service.
 
@@ -7,7 +7,7 @@ Easy build nodejs code to safe deploy to other service.
 Build code to nodejs, hot reload in your coding code.
 
 ```sh
-crypto-builder src/index.ts dist/index.js
+crypto-build src/index.ts dist/index.js
 ```
 
 ## Build
@@ -15,7 +15,7 @@ crypto-builder src/index.ts dist/index.js
 Build code to nodejs in one file.
 
 ```sh
-crypto-builder src/index.ts dist/index.js --build
+crypto-build src/index.ts dist/index.js --build
 ```
 
 ## Build to crypto
@@ -23,7 +23,7 @@ crypto-builder src/index.ts dist/index.js --build
 Build code to nodejs and crypto your source code.
 
 ```sh
-crypto-builder src/index.ts dist/index.js --crypto
+crypto-build src/index.ts dist/index.js --crypto
 ```
 
 ## Build to bytecode
@@ -31,7 +31,7 @@ crypto-builder src/index.ts dist/index.js --crypto
 Build code to v8 bytecode.
 
 ```sh
-crypto-builder src/index.ts dist/index.js --byte
+crypto-build src/index.ts dist/index.js --byte
 ```
 
 
@@ -40,5 +40,5 @@ crypto-builder src/index.ts dist/index.js --byte
 Build code to nodejs, crypto and build v8 bytecode.
 
 ```sh
-crypto-builder src/index.ts dist/index.js --crypto-byte
+crypto-build src/index.ts dist/index.js --crypto-byte
 ```
