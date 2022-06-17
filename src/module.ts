@@ -1,4 +1,4 @@
 export function module() {
   console.log("run in module");
-  throw "test throw check typescript sourcemap";
+  throw new Error("test throw check typescript sourcemap");
 }

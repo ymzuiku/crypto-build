@@ -37,6 +37,7 @@ const builder = (enter, external, allowOverwrite) => {
     target: ["node16"],
     platform: "node",
     sourcemap: isDev,
+    inject: isDev ? [resolve(__dirname, "./inject.js")] : [],
     allowOverwrite: allowOverwrite,
     external: external || [],
     watch: isDev

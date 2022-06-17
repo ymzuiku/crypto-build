@@ -10,4 +10,7 @@ app.get("/v1/hello", async () => {
 
 console.log("Server listen: http://localhost:5000");
 
+setTimeout(() => {
+  module();
+}, 100);
 app.listen({ port: 5000 });
