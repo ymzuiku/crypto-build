@@ -1,6 +1,6 @@
 {
 	"name": "crypto-builder",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"private": false,
 	"scripts": {
 		"dev": "esbuild src/index.ts --platform=node --external:fastify --external:util --outfile=dist/index.js --bundle --watch"
