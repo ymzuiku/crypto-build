@@ -10,7 +10,7 @@ Build code to nodejs, hot reload in your coding code.
 crypto-builder src/index.ts dist/index.js
 ```
 
-## build
+## Build
 
 Build code to nodejs in one file.
 
@@ -18,7 +18,7 @@ Build code to nodejs in one file.
 crypto-builder src/index.ts dist/index.js --build
 ```
 
-## build to crypto
+## Build to crypto
 
 Build code to nodejs and crypto your source code.
 
@@ -26,10 +26,19 @@ Build code to nodejs and crypto your source code.
 crypto-builder src/index.ts dist/index.js --crypto
 ```
 
-## build to bytecode
+## Build to bytecode
+
+Build code to v8 bytecode.
+
+```sh
+crypto-builder src/index.ts dist/index.js --byte
+```
+
+
+## Build to crypto + bytecode
 
 Build code to nodejs, crypto and build v8 bytecode.
 
 ```sh
-crypto-builder src/index.ts dist/index.js --byte
+crypto-builder src/index.ts dist/index.js --crypto-byte
 ```

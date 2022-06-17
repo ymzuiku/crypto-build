@@ -6,6 +6,7 @@ const child_process = require("child_process");
 const fs = require("fs");
 const { resolve } = require("path");
 const esbuild = require("esbuild");
+const pkg = require("./package.json");
 
 const cwd = (...args) => resolve(process.cwd(), ...args);
 const entryfile = argv[0];
@@ -14,7 +15,8 @@ const isDev = !argv[2];
 const isBuild = argv[2] === "--build";
 const isCrypto = argv[2] === "--crypto";
 const isBytecode = argv[2] === "--byte";
-
+const isCryptoBytecode = argv[2] === "--crypto-byte";
+const depend = Object.keys({ ...pkg.devDependencies, ...pkg.dependencies });
 let worker;
 
 function serve() {
@@ -26,8 +28,6 @@ function serve() {
     stdio: "inherit",
   });
 }
-
-const pkg = require("./package.json");
 
 const builder = (enter, external, allowOverwrite) => {
   return esbuild.build({
@@ -74,13 +74,11 @@ const buildByte = async () => {
     output: cwd(outfile) + "c",
   });
   fs.writeFileSync(cwd(outfile), `require("bytenode");`);
-
   builder(outfile, ["electron"], true).then(() => {
     const code3 = fs.readFileSync(cwd(outfile)).toString();
     const inputC = `require("./${outfile.split("/").pop()}c");`;
     const end = [code3, inputC].join("\n");
     fs.writeFileSync(cwd(outfile), end, null);
-    console.log("builded bytenode.");
   });
 };
 
@@ -89,18 +87,23 @@ const buildCrypto = async () => {
   const code = fs.readFileSync(cwd(outfile)).toString();
   const obfuscatorRes = JavaScriptObfuscator.obfuscate(code, {
     compact: true,
+    target: "node",
     controlFlowFlattening: false,
     deadCodeInjection: false,
     debugProtection: false,
     debugProtectionInterval: 0,
     disableConsoleOutput: false,
-    identifierNamesGenerator: "hexadecimal",
+    identifierNamesGenerator: "mangled-shuffled",
     log: false,
-    numbersToExpressions: false,
+    // transformObjectKeys: true,
+    numbersToExpressions: true,
     renameGlobals: false,
     selfDefending: false,
     simplify: true,
-    splitStrings: false,
+    exclude: depend.map((v) => `require("${v}")`).concat(depend),
+    // splitStrings: true,
+    // splitStringsChunkLength: 7,
+    ignoreImports: true,
     stringArray: true,
     stringArrayCallsTransform: false,
     stringArrayCallsTransformThreshold: 0.5,
@@ -119,21 +122,22 @@ const buildCrypto = async () => {
   fs.writeFileSync(cwd(outfile), obf);
 };
 
-builder(
-  cwd(entryfile),
-  Object.keys({ ...pkg.devDependencies, ...pkg.dependencies })
-).then(async (result) => {
+builder(cwd(entryfile), depend).then(async (result) => {
   if (isDev) {
     serve();
   } else if (isBuild) {
     console.log("building release...");
     await buildRelease();
   } else if (isCrypto) {
-    console.log("building release...");
+    console.log("building crypto...");
     await buildRelease();
     await buildCrypto();
   } else if (isBytecode) {
     console.log("building bytenode...");
+    await buildRelease();
+    await buildByte();
+  } else if (isCryptoBytecode) {
+    console.log("building crypto+bytenode...");
     await buildRelease();
     await buildCrypto();
     await buildByte();
