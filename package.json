@@ -1,0 +1,30 @@
+{
+	"name": "crypto-builder",
+	"version": "0.0.2",
+	"private": false,
+	"scripts": {
+		"dev": "esbuild src/index.ts --platform=node --external:fastify --external:util --outfile=dist/index.js --bundle --watch"
+	},
+	"devDependencies": {
+		"@types/node": "^18.0.0",
+		"fastify": "^4.0.3"
+	},
+	"dependencies": {
+		"@vercel/ncc": "^0.34.0",
+		"bytenode": "^1.3.6",
+		"esbuild": "^0.14.45",
+		"javascript-obfuscator": "^4.0.0",
+		"source-map-support": "^0.5.21"
+	},
+	"bin": {
+		"crypto-builder": "bin.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ymzuiku/crypto-builder.git"
+	},
+	"bugs": {
+		"url": "git+https://github.com/ymzuiku/crypto-builder.git"
+	},
+	"homepage": "git+https://github.com/ymzuiku/crypto-builder.git"
+}
