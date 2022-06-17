@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-require("source-map-support").install();
+require('source-map-support').install();
 
 const argv = process.argv.splice(2);
-const child_process = require("child_process");
-const fs = require("fs");
-const { resolve } = require("path");
-const esbuild = require("esbuild");
-const pkg = require("./package.json");
+const child_process = require('child_process');
+const fs = require('fs');
+const { resolve } = require('path');
+const esbuild = require('esbuild');
+const pkg = require('./package.json');
 
 const cwd = (...args) => resolve(process.cwd(), ...args);
 const entryfile = argv[0];
 const outfile = argv[1];
 const isDev = !argv[2];
-const isBuild = argv[2] === "--build";
-const isCrypto = argv[2] === "--crypto";
-const isBytecode = argv[2] === "--byte";
-const isCryptoBytecode = argv[2] === "--crypto-byte";
+const isBuild = argv[2] === '--build';
+const isCrypto = argv[2] === '--crypto';
+const isBytecode = argv[2] === '--byte';
+const isCryptoBytecode = argv[2] === '--crypto-byte';
 const depend = Object.keys({ ...pkg.devDependencies, ...pkg.dependencies });
 let worker;
 
@@ -24,8 +24,8 @@ function serve() {
     worker.kill(1);
     worker = null;
   }
-  worker = child_process.spawn("node", [cwd(outfile)], {
-    stdio: "inherit",
+  worker = child_process.spawn('node', [cwd(outfile)], {
+    stdio: 'inherit',
   });
 }
 
@@ -34,17 +34,17 @@ const builder = (enter, external, allowOverwrite) => {
     entryPoints: [enter],
     outfile,
     bundle: true,
-    target: ["node16"],
-    platform: "node",
+    target: ['node16'],
+    platform: 'node',
     sourcemap: isDev,
-    inject: isDev ? [resolve(__dirname, "./inject.js")] : [],
+    inject: isDev ? [resolve(__dirname, './inject.js')] : [],
     allowOverwrite: allowOverwrite,
     external: external || [],
     watch: isDev
       ? {
           onRebuild(error, result) {
             if (error) {
-              console.log("__debug__", error);
+              console.log('__debug__', error);
             } else {
               serve();
             }
@@ -55,7 +55,7 @@ const builder = (enter, external, allowOverwrite) => {
 };
 
 const buildRelease = async () => {
-  const { code } = await require("@vercel/ncc")(cwd(outfile), {
+  const { code } = await require('@vercel/ncc')(cwd(outfile), {
     cache: false,
     filterAssetBase: process.cwd(), // default
     minify: true, // default
@@ -68,32 +68,32 @@ const buildRelease = async () => {
 };
 
 const buildByte = async () => {
-  const bytenode = require("bytenode");
+  const bytenode = require('bytenode');
   bytenode.compileFile({
     filename: cwd(outfile),
-    output: cwd(outfile) + "c",
+    output: cwd(outfile) + 'c',
   });
   fs.writeFileSync(cwd(outfile), `require("bytenode");`);
-  builder(outfile, ["electron"], true).then(() => {
+  builder(outfile, ['electron'], true).then(() => {
     const code3 = fs.readFileSync(cwd(outfile)).toString();
-    const inputC = `require("./${outfile.split("/").pop()}c");`;
-    const end = [code3, inputC].join("\n");
+    const inputC = `require("./${outfile.split('/').pop()}c");`;
+    const end = [code3, inputC].join('\n');
     fs.writeFileSync(cwd(outfile), end, null);
   });
 };
 
 const buildCrypto = async () => {
-  var JavaScriptObfuscator = require("javascript-obfuscator");
+  var JavaScriptObfuscator = require('javascript-obfuscator');
   const code = fs.readFileSync(cwd(outfile)).toString();
   const obfuscatorRes = JavaScriptObfuscator.obfuscate(code, {
     compact: true,
-    target: "node",
+    target: 'node',
     controlFlowFlattening: false,
     deadCodeInjection: false,
     debugProtection: false,
     debugProtectionInterval: 0,
     disableConsoleOutput: false,
-    identifierNamesGenerator: "mangled-shuffled",
+    identifierNamesGenerator: 'mangled-shuffled',
     log: false,
     // transformObjectKeys: true,
     numbersToExpressions: true,
@@ -114,7 +114,7 @@ const buildCrypto = async () => {
     stringArrayWrappersCount: 1,
     stringArrayWrappersChainedCalls: true,
     stringArrayWrappersParametersMaxCount: 2,
-    stringArrayWrappersType: "variable",
+    stringArrayWrappersType: 'variable',
     stringArrayThreshold: 0.75,
     unicodeEscapeSequence: false,
   });
@@ -126,18 +126,18 @@ builder(cwd(entryfile), depend).then(async (result) => {
   if (isDev) {
     serve();
   } else if (isBuild) {
-    console.log("building release...");
+    console.log('building release...');
     await buildRelease();
   } else if (isCrypto) {
-    console.log("building crypto...");
+    console.log('building crypto...');
     await buildRelease();
     await buildCrypto();
   } else if (isBytecode) {
-    console.log("building bytenode...");
+    console.log('building bytenode...');
     await buildRelease();
     await buildByte();
   } else if (isCryptoBytecode) {
-    console.log("building crypto+bytenode...");
+    console.log('building crypto+bytenode...');
     await buildRelease();
     await buildCrypto();
     await buildByte();

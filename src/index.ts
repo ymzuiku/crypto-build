@@ -1,14 +1,14 @@
-import fastify from "fastify";
-import { module } from "./module";
+import fastify from 'fastify';
+import { module } from './module';
 
 const app = fastify();
 
-app.get("/v1/hello", async () => {
+app.get('/v1/hello', async () => {
   module();
-  return { msg: "world" };
+  return { msg: 'world' };
 });
 
-console.log("Server listen: http://localhost:5000");
+console.log('Server listen: http://localhost:5000');
 
 // setTimeout(() => {
 //   module();
@@ -20,9 +20,9 @@ function fibonacci(n: number) {
 }
 
 async function start() {
-  console.time("js");
+  console.time('js');
   fibonacci(43);
-  console.timeEnd("js");
+  console.timeEnd('js');
 }
 
 start();
